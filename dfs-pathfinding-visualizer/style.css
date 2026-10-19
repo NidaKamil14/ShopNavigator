@@ -1,0 +1,1361 @@
+/* ==========================================================================
+   StoreWay • Mall Navigation & Pathfinding Design System
+   Refined Light & Dark Mode System with Architectural Floorplan Styling
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Design Tokens: Light Mode (DEFAULT)
+   -------------------------------------------------------------------------- */
+:root {
+  /* App Backgrounds & Card Surfaces */
+  --bg-app: #f4f6fa;
+  --bg-card: #ffffff;
+  --bg-subtle: #edf2f7;
+  --bg-elevated: #ffffff;
+
+  /* Typography Colors */
+  --text-main: #0f172a;
+  --text-muted: #475569;
+  --text-dim: #94a3b8;
+
+  /* Borders & Dividers */
+  --border-light: #e2e8f0;
+  --border-subtle: #edf2f7;
+  --border-focus: #2563eb;
+
+  /* Primary Brand Theme */
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+  --primary-light: #eff6ff;
+  --primary-border: #bfdbfe;
+  
+  /* Navigation Status Indicators */
+  --start-accent: #10b981;
+  --start-light: #ecfdf5;
+  --start-border: #a7f3d0;
+
+  --dest-accent: #ef4444;
+  --dest-light: #fef2f2;
+  --dest-border: #fecaca;
+
+  --warning: #f59e0b;
+  --warning-light: #fef3c7;
+  --warning-border: #fde68a;
+
+  /* Architectural Mall Floorplan Tokens (Light) */
+  --map-bg: #fafbfc;
+  --mall-boundary: #ffffff;
+  --mall-wall-stroke: #cbd5e1;
+  --mall-curtain-glass: #f1f5f9;
+  --corridor-base: #e2e8f0;
+  --corridor-floor: #ffffff;
+  --corridor-dash: #cbd5e1;
+  --atrium-outer: #e2e8f0;
+  --atrium-inner: #f8fafc;
+  --atrium-border: #bfdbfe;
+
+  --store-card-bg: #ffffff;
+  --store-card-stroke: #94a3b8;
+  --store-title-color: #0f172a;
+  --store-unit-color: #64748b;
+  --store-door-accent: #2563eb;
+
+  --kiosk-bg: #ffffff;
+  --kiosk-stroke: #cbd5e1;
+  --kiosk-label: #0f172a;
+
+  --waypoint-node: #94a3b8;
+  --waypoint-label: #94a3b8;
+
+  /* Elevation Shadows */
+  --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.05), 0 1px 2px -1px rgb(0 0 0 / 0.03);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.04);
+  --shadow-lg: 0 10px 18px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.03);
+
+  --radius-lg: 16px;
+  --radius-md: 10px;
+  --radius-sm: 6px;
+}
+
+/* --------------------------------------------------------------------------
+   2. Design Tokens: Dark Mode (Explicit data-theme="dark")
+   -------------------------------------------------------------------------- */
+:root[data-theme="dark"] {
+  --bg-app: #090d16;
+  --bg-card: #111827;
+  --bg-subtle: #1e293b;
+  --bg-elevated: #162032;
+
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --text-dim: #64748b;
+
+  --border-light: #1f293d;
+  --border-subtle: #162235;
+  --border-focus: #60a5fa;
+
+  --primary: #3b82f6;
+  --primary-hover: #2563eb;
+  --primary-light: #172554;
+  --primary-border: #1e3a8a;
+
+  --start-accent: #10b981;
+  --start-light: #064e3b;
+  --start-border: #047857;
+
+  --dest-accent: #ef4444;
+  --dest-light: #450a0a;
+  --dest-border: #991b1b;
+
+  --warning: #f59e0b;
+  --warning-light: #451a03;
+  --warning-border: #78350f;
+
+  /* Architectural Mall Floorplan Tokens (Dark) */
+  --map-bg: #0d1322;
+  --mall-boundary: #111827;
+  --mall-wall-stroke: #1f293d;
+  --mall-curtain-glass: #0f172a;
+  --corridor-base: #1e293b;
+  --corridor-floor: #0f172a;
+  --corridor-dash: #334155;
+  --atrium-outer: #1e293b;
+  --atrium-inner: #131b2e;
+  --atrium-border: #1e3a8a;
+
+  --store-card-bg: #151f32;
+  --store-card-stroke: #334155;
+  --store-title-color: #f8fafc;
+  --store-unit-color: #94a3b8;
+  --store-door-accent: #60a5fa;
+
+  --kiosk-bg: #162032;
+  --kiosk-stroke: #334155;
+  --kiosk-label: #f8fafc;
+
+  --waypoint-node: #475569;
+  --waypoint-label: #64748b;
+
+  --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.4);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.5);
+  --shadow-lg: 0 10px 20px -3px rgb(0 0 0 / 0.6);
+}
+
+/* --------------------------------------------------------------------------
+   3. Base & Reset
+   -------------------------------------------------------------------------- */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--bg-app);
+  color: var(--text-main);
+  line-height: 1.5;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+/* --------------------------------------------------------------------------
+   4. Header & Theme Toggle
+   -------------------------------------------------------------------------- */
+header.app-header {
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border-light);
+  padding: 14px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  box-shadow: var(--shadow-sm);
+  transition: background-color 0.25s ease, border-color 0.25s ease;
+}
+
+.brand-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-icon {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  color: #ffffff;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 4px 12px -2px rgba(37, 99, 235, 0.35);
+}
+
+.brand-text h1 {
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.brand-badge {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--primary);
+  background: var(--primary-light);
+  border: 1px solid var(--primary-border);
+  padding: 2px 8px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.brand-text p {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.header-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-light);
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--start-accent);
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.25);
+}
+
+/* Polished Compact Light / Dark Toggle */
+.theme-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-light);
+  border-radius: 20px;
+  color: var(--text-main);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  user-select: none;
+}
+
+.theme-toggle-btn:hover {
+  background: var(--bg-card);
+  border-color: var(--primary-border);
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-1px);
+}
+
+.theme-toggle-btn .theme-icon {
+  display: grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  color: var(--text-muted);
+  transition: transform 0.25s ease, color 0.2s ease;
+}
+
+:root:not([data-theme="dark"]) .theme-toggle-btn .theme-icon.sun {
+  color: #f59e0b;
+}
+:root:not([data-theme="dark"]) .theme-toggle-btn .theme-icon.moon {
+  display: none;
+}
+
+:root[data-theme="dark"] .theme-toggle-btn .theme-icon.moon {
+  color: #60a5fa;
+}
+:root[data-theme="dark"] .theme-toggle-btn .theme-icon.sun {
+  display: none;
+}
+
+.theme-toggle-label {
+  letter-spacing: 0.02em;
+}
+
+/* --------------------------------------------------------------------------
+   5. Search & Route Planning Controls Panel
+   -------------------------------------------------------------------------- */
+.controls-panel {
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border-light);
+  padding: 14px 28px;
+  box-shadow: var(--shadow-sm);
+  transition: background-color 0.25s ease, border-color 0.25s ease;
+}
+
+.controls-inner {
+  max-width: 1540px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+}
+
+.field-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.input-pill {
+  display: flex;
+  align-items: center;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 5px 12px;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.input-pill:focus-within {
+  border-color: var(--border-focus);
+  background: var(--bg-card);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.input-pill label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.icon-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+}
+.icon-dot.start { background: var(--start-accent); box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.25); }
+.icon-dot.dest { background: var(--dest-accent); box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.25); }
+.icon-dot.algo { background: #8b5cf6; box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.25); }
+
+.input-pill select {
+  background: transparent;
+  border: none;
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text-main);
+  outline: none;
+  cursor: pointer;
+  padding: 4px 6px;
+  min-width: 180px;
+}
+
+.swap-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1px solid var(--border-light);
+  background: var(--bg-card);
+  color: var(--text-muted);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: var(--shadow-sm);
+}
+
+.swap-btn:hover {
+  background: var(--bg-subtle);
+  color: var(--primary);
+  transform: rotate(180deg);
+  border-color: var(--primary-border);
+}
+
+.select-compact {
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 8px 12px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-main);
+  outline: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.select-compact:focus {
+  border-color: var(--border-focus);
+  background: var(--bg-card);
+}
+
+.pill-checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.2s ease;
+}
+
+.pill-checkbox:hover {
+  border-color: var(--primary-border);
+  color: var(--text-main);
+}
+
+.pill-checkbox input[type="checkbox"] {
+  accent-color: var(--primary);
+  width: 15px;
+  height: 15px;
+  cursor: pointer;
+}
+
+.pill-checkbox.active {
+  background: var(--primary-light);
+  border-color: var(--primary-border);
+  color: var(--primary);
+}
+
+.btn-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+}
+
+.primary-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--primary);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 10px 22px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 12px -2px rgba(37, 99, 235, 0.4);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.primary-cta:hover {
+  background: var(--primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px -2px rgba(37, 99, 235, 0.5);
+}
+
+.primary-cta:active {
+  transform: translateY(0);
+}
+
+.secondary-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--bg-subtle);
+  color: var(--text-main);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 10px 18px;
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  user-select: none;
+}
+
+.secondary-btn:hover {
+  background: var(--bg-card);
+  border-color: var(--primary-border);
+  color: var(--primary);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.secondary-btn:active {
+  transform: translateY(0);
+}
+
+/* --------------------------------------------------------------------------
+   6. Main Layout Containers
+   -------------------------------------------------------------------------- */
+.app-container {
+  max-width: 1540px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 20px 28px 40px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 380px;
+  gap: 20px;
+  flex: 1;
+}
+
+.surface-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: background-color 0.25s ease, border-color 0.25s ease;
+}
+
+/* --------------------------------------------------------------------------
+   7. Floor Selection Tabs
+   -------------------------------------------------------------------------- */
+.tabs-header-bar {
+  padding: 14px 20px;
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.tabs-nav {
+  display: flex;
+  gap: 6px;
+  background: var(--bg-subtle);
+  padding: 4px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-light);
+  overflow-x: auto;
+}
+
+.tab-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 15px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tab-pill:hover:not(.on) {
+  color: var(--text-main);
+  background: rgba(0, 0, 0, 0.03);
+}
+
+.tab-pill.on {
+  background: var(--bg-card);
+  color: var(--primary);
+  font-weight: 700;
+  box-shadow: var(--shadow-sm);
+}
+
+.tab-badge {
+  font-size: 10px;
+  font-weight: 700;
+  background: var(--primary-light);
+  color: var(--primary);
+  border: 1px solid var(--primary-border);
+  border-radius: 12px;
+  padding: 1px 6px;
+  display: none;
+}
+
+.map-tools {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.map-legend-items {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend-swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+}
+.legend-swatch.you { background: var(--dest-accent); border-radius: 50%; }
+.legend-swatch.dijkstra { background: #3b82f6; }
+.legend-swatch.explored-edge { background: #3b82f6; border-radius: 2px; }
+.legend-swatch.route-final { background: var(--primary); }
+.legend-swatch.processing { background: var(--warning); }
+.legend-swatch.crowded { background: #f59e0b; border: 1px dashed #d97706; }
+
+/* --------------------------------------------------------------------------
+   8. Mall Map Viewport & SVG Architectural Floorplan
+   -------------------------------------------------------------------------- */
+.map-viewport {
+  position: relative;
+  background: var(--bg-subtle);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid var(--border-light);
+}
+
+#map {
+  width: 100%;
+  height: auto;
+  max-height: 615px;
+  background: var(--map-bg);
+  border: 1px solid var(--border-light);
+  border-radius: 14px;
+  display: block;
+  box-shadow: var(--shadow-sm);
+  transition: background-color 0.25s ease, border-color 0.25s ease;
+}
+
+/* Outer Walls & Glass Curtain Walls */
+.mall-boundary-outer {
+  fill: var(--mall-boundary);
+  stroke: var(--mall-wall-stroke);
+  stroke-width: 3.5;
+}
+
+.mall-curtain-glass {
+  fill: none;
+  stroke: var(--mall-wall-stroke);
+  stroke-width: 1;
+  stroke-dasharray: 4 6;
+  opacity: 0.6;
+}
+
+.mall-level-title {
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  fill: var(--text-muted);
+  text-anchor: middle;
+  text-transform: uppercase;
+  user-select: none;
+}
+
+.mall-zone-tag {
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  fill: var(--text-dim);
+  text-anchor: middle;
+  text-transform: uppercase;
+  user-select: none;
+}
+
+/* Concourse & Walkways */
+.concourse-underlay {
+  stroke: var(--corridor-base);
+  stroke-width: 62;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.concourse-surface {
+  stroke: var(--corridor-floor);
+  stroke-width: 52;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.concourse-centerline {
+  stroke: var(--corridor-dash);
+  stroke-width: 1.5;
+  stroke-dasharray: 6 6;
+  opacity: 0.8;
+}
+
+/* Central Atrium Plaza & Rotunda */
+.atrium-outer-terrazzo {
+  fill: var(--atrium-outer);
+  stroke: var(--border-light);
+  stroke-width: 1.5;
+}
+
+.atrium-surface-circle {
+  fill: var(--atrium-inner);
+  stroke: var(--atrium-border);
+  stroke-width: 1.5;
+}
+
+.atrium-balustrade-ring {
+  fill: none;
+  stroke: var(--border-light);
+  stroke-width: 1;
+  stroke-dasharray: 4 4;
+}
+
+.atrium-title-label {
+  font-size: 8.5px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  fill: var(--text-dim);
+  text-anchor: middle;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+
+/* --------------------------------------------------------------------------
+   9. Retail Store Units Presentation
+   -------------------------------------------------------------------------- */
+.store-group {
+  cursor: pointer;
+}
+
+.store-card {
+  fill: var(--store-card-bg);
+  stroke: var(--store-card-stroke);
+  stroke-width: 1.75;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.store-group:hover .store-card {
+  stroke: var(--primary);
+  stroke-width: 2.75;
+  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.1));
+}
+
+.store-group.is-start .store-card {
+  stroke: var(--start-accent);
+  stroke-width: 3.5;
+  filter: drop-shadow(0 0 14px rgba(16, 185, 129, 0.45));
+}
+
+.store-group.is-dest .store-card {
+  stroke: var(--dest-accent);
+  stroke-width: 3.5;
+  filter: drop-shadow(0 0 14px rgba(239, 68, 68, 0.45));
+}
+
+.store-group.is-explored:not(.is-start):not(.is-dest) .store-card {
+  stroke: #3b82f6;
+  stroke-width: 2.5;
+  fill: var(--primary-light);
+  filter: drop-shadow(0 0 10px rgba(59, 130, 246, 0.3));
+}
+
+.store-group.is-current .store-card {
+  stroke: var(--warning);
+  stroke-width: 3;
+  filter: drop-shadow(0 0 12px rgba(245, 158, 11, 0.6));
+}
+
+.store-canopy-bar {
+  pointer-events: none;
+}
+
+.store-category-text {
+  font-size: 9.5px;
+  font-weight: 800;
+  text-anchor: middle;
+  fill: #ffffff;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+
+.store-name-text {
+  font-size: 15px;
+  font-weight: 800;
+  text-anchor: middle;
+  fill: var(--store-title-color);
+  pointer-events: none;
+  letter-spacing: -0.015em;
+}
+
+.store-unit-number {
+  font-size: 10px;
+  font-weight: 700;
+  text-anchor: middle;
+  fill: var(--store-unit-color);
+  pointer-events: none;
+  letter-spacing: 0.04em;
+}
+
+.store-window-line {
+  stroke: var(--border-light);
+  stroke-width: 1.5;
+  opacity: 0.7;
+}
+
+.store-door-threshold {
+  fill: var(--store-door-accent);
+  opacity: 0.9;
+}
+
+.store-door-notch {
+  fill: #ffffff;
+  stroke: var(--store-door-accent);
+  stroke-width: 2;
+}
+
+/* --------------------------------------------------------------------------
+   10. Route Ribbon & Navigation Traversal
+   -------------------------------------------------------------------------- */
+.edge-corridor {
+  stroke: var(--border-light);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.edge-corridor.cw {
+  stroke: var(--warning);
+  stroke-width: 4;
+  stroke-dasharray: 6 6;
+  opacity: 0.95;
+}
+
+.edge-corridor.explored {
+  stroke: #3b82f6;
+  stroke-width: 3.5;
+  stroke-dasharray: 6 4;
+  opacity: 0.95;
+}
+
+.nav-route-ribbon {
+  stroke: var(--primary);
+  stroke-width: 6.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 12 8;
+  animation: routeDashAnimation 1s linear infinite;
+  filter: drop-shadow(0 2px 6px rgba(37, 99, 235, 0.45));
+}
+
+@keyframes routeDashAnimation {
+  to {
+    stroke-dashoffset: -20;
+  }
+}
+
+.transfer-badge-box {
+  fill: #ea580c;
+  filter: drop-shadow(0 2px 4px rgba(234, 88, 12, 0.35));
+}
+
+.transfer-badge-text {
+  font-size: 11px;
+  font-weight: 800;
+  fill: #ffffff;
+  text-anchor: middle;
+}
+
+/* --------------------------------------------------------------------------
+   11. Connectors, Amenities & Subtle Dijkstra Trace Nodes
+   -------------------------------------------------------------------------- */
+.kiosk-card {
+  fill: var(--kiosk-bg);
+  stroke: var(--kiosk-stroke);
+  stroke-width: 1.5;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.kiosk-card.ex {
+  fill: var(--primary-light);
+  stroke: var(--primary);
+}
+
+.kiosk-card.cu {
+  fill: var(--warning-light);
+  stroke: var(--warning);
+  stroke-width: 2.5;
+}
+
+.kiosk-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-anchor: middle;
+  fill: var(--kiosk-label);
+  pointer-events: none;
+}
+
+/* Waypoints: Subtle when idle, prominent during Dijkstra exploration */
+.waypoint-node {
+  fill: var(--waypoint-node);
+  stroke: var(--bg-card);
+  stroke-width: 2;
+  opacity: 0.65;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.waypoint-node.ex {
+  fill: #3b82f6;
+  stroke: #ffffff;
+  opacity: 1;
+  r: 8;
+  filter: drop-shadow(0 0 6px rgba(59, 130, 246, 0.7));
+}
+
+.waypoint-node.cu {
+  fill: var(--warning);
+  stroke: #ffffff;
+  stroke-width: 3;
+  opacity: 1;
+  r: 10;
+  filter: drop-shadow(0 0 10px rgba(245, 158, 11, 0.9));
+}
+
+.waypoint-label {
+  font-size: 9px;
+  font-weight: 600;
+  fill: var(--waypoint-label);
+  text-anchor: middle;
+  pointer-events: none;
+  opacity: 0.75;
+}
+
+/* User Location Puck with Pulsing Radar */
+#me {
+  fill: var(--dest-accent);
+  stroke: #ffffff;
+  stroke-width: 3.5;
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  filter: drop-shadow(0 2px 6px rgba(239, 68, 68, 0.5));
+}
+
+.map-footer-bar {
+  padding: 12px 20px;
+  background: var(--bg-card);
+  font-size: 12px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* --------------------------------------------------------------------------
+   12. Side Panel: Telemetry, Directions, Benchmarks
+   -------------------------------------------------------------------------- */
+.side-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.panel-section {
+  padding: 16px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.panel-section:last-child {
+  border-bottom: none;
+}
+
+.panel-title {
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Metrics Grid */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.metric-card.metric-wide {
+  grid-column: span 2;
+}
+
+.metric-card {
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  transition: all 0.2s ease;
+}
+
+.metric-card:hover {
+  background: var(--bg-card);
+  border-color: var(--primary-border);
+  box-shadow: var(--shadow-sm);
+}
+
+.metric-card small {
+  display: block;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin-bottom: 4px;
+}
+
+.metric-card b {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--text-main);
+  letter-spacing: -0.02em;
+}
+
+/* Route Message Banner */
+.route-msg-box {
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.route-msg-box.found {
+  background: var(--primary-light);
+  border-color: var(--primary-border);
+  color: var(--text-main);
+}
+
+.route-msg-box b,
+.route-msg-box strong {
+  color: var(--primary);
+}
+
+/* Directions List */
+.directions-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 200px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.direction-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 9px 12px;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-main);
+  transition: all 0.15s ease;
+}
+
+.direction-step:hover {
+  background: var(--bg-card);
+  border-color: var(--primary-border);
+}
+
+.direction-step.transfer {
+  background: #fff7ed;
+  border-color: #fed7aa;
+  color: #9a3412;
+}
+
+:root[data-theme="dark"] .direction-step.transfer {
+  background: #431407;
+  border-color: #7c2d12;
+  color: #fdba74;
+}
+
+.direction-step.arrive {
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+  color: #166534;
+}
+
+:root[data-theme="dark"] .direction-step.arrive {
+  background: #052e16;
+  border-color: #166534;
+  color: #86efac;
+}
+
+.step-num {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.direction-step.transfer .step-num {
+  background: #ea580c;
+}
+.direction-step.arrive .step-num {
+  background: var(--start-accent);
+}
+
+/* Algorithm Comparison Benchmark Table */
+.cmp-container {
+  font-size: 12px;
+}
+
+.cmp-stats-top {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.cmp-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 12px;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.cmp-table th {
+  background: var(--bg-subtle);
+  font-weight: 700;
+  color: var(--text-muted);
+  text-align: left;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.cmp-table td {
+  padding: 7px 10px;
+  border-bottom: 1px solid var(--border-light);
+  color: var(--text-main);
+}
+
+.cmp-table tr:last-child td {
+  border-bottom: none;
+}
+
+.cmp-table tr.highlight-row {
+  background: var(--primary-light);
+  font-weight: 600;
+}
+
+.cmp-table tr.highlight-row td:first-child {
+  color: var(--primary);
+}
+
+.algo-tag {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  background: var(--primary);
+  color: #ffffff;
+  margin-left: 4px;
+}
+
+.algo-tag.optimal { background: #10b981; }
+.algo-tag.exact { background: #6366f1; }
+.algo-tag.minhops { background: #0284c7; }
+.algo-tag.nonoptimal { background: #ea580c; }
+
+.active-badge {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 9.5px;
+  font-weight: 800;
+  background: var(--primary-light);
+  color: var(--primary);
+  border: 1px solid var(--primary-border);
+  margin-left: 6px;
+  text-transform: uppercase;
+}
+
+.cmp-table tr.selected-algo-row {
+  background: rgba(37, 99, 235, 0.08);
+  font-weight: 600;
+}
+
+:root[data-theme="dark"] .cmp-table tr.selected-algo-row {
+  background: rgba(59, 130, 246, 0.15);
+}
+
+.cmp-analysis-box {
+  background: var(--bg-subtle);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+/* Dijkstra Heap Trace */
+.trace-accordion {
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--bg-subtle);
+}
+
+.trace-summary {
+  padding: 10px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  user-select: none;
+}
+
+.trace-summary:hover {
+  color: var(--text-main);
+  background: var(--bg-card);
+}
+
+#log {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  list-style: none;
+  padding: 8px 12px;
+  max-height: 140px;
+  overflow-y: auto;
+  background: var(--bg-card);
+  border-top: 1px solid var(--border-light);
+}
+
+#log li {
+  padding: 3px 0;
+  border-bottom: 1px dashed var(--border-light);
+  color: var(--text-muted);
+}
+
+#log li:last-child {
+  border-bottom: none;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-light);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-dim);
+}
+
+/* --------------------------------------------------------------------------
+   13. Responsive Breakpoints
+   -------------------------------------------------------------------------- */
+@media (max-width: 1120px) {
+  .app-container {
+    grid-template-columns: 1fr;
+  }
+  .btn-group {
+    width: 100%;
+    margin-left: 0;
+  }
+  .primary-cta {
+    flex: 1;
+  }
+  .secondary-btn {
+    flex: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  header.app-header {
+    padding: 12px 16px;
+    flex-wrap: wrap;
+  }
+  .controls-panel {
+    padding: 12px 16px;
+  }
+  .app-container {
+    padding: 14px 16px;
+  }
+  .input-pill {
+    width: 100%;
+  }
+  .input-pill select {
+    min-width: 0;
+    width: 100%;
+  }
+  .swap-btn {
+    align-self: center;
+    margin: 0 auto;
+  }
+}
