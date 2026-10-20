@@ -2,6 +2,14 @@
 
 ShopNavigator is an interactive mall navigation system that helps users find the shortest route between locations across four floors of a shopping mall.
 
+## 🚀 Live Demo
+
+[**Explore ShopNavigator →**](https://shop-navigator.vercel.app)
+
+## 🖥️ Simulation Preview
+
+![ShopNavigator Simulation](assets/shopnavigator-preview.png)
+
 ## ✨ Features
 
 - **Multi-Floor Navigation:** Explore a simulated mall with four floors and multiple stores.
