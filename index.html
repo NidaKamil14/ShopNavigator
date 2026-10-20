@@ -1,101 +1,395 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ShopNavigator | Mall Store Finder</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ShopNavigator | Mall Store Finder</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header><h1>ShopNavigator</h1><p>Smart mall navigation across 4 floors · Powered by shortest-path algorithms</p></header>
 
-<section class="controls">
-  <div class="field"><label for="ss">Your current location</label><select id="ss"></select></div>
-  <button id="swap" title="Swap">&#8644;</button>
-  <div class="field"><label for="sd">Destination</label><select id="sd"></select></div>
-  <div class="field"><label for="speed">Speed</label>
-    <select id="speed"><option value="500">Slow</option><option value="250" selected>Normal</option><option value="90">Fast</option><option value="0">Instant</option></select></div>
-  <label class="field chk"><input type="checkbox" id="acc"> Wheelchair accessible (no stairs/escalator)</label>
-  <label class="field chk"><input type="checkbox" id="crowd"> Avoid crowded corridors</label>
-  <button class="go" id="find">Find Shortest Route</button>
-  <button id="instant" title="Calculate immediately, then animate the route">Show Instantly ↗</button>
-  <button id="randomCosts" title="Generate new random weights for all connections">Change Costs ↻</button>
+<header class="site-header">
+  <a href="#" class="brand" id="brandHome">
+    <span class="brand-icon">⌖</span>
+    <span>
+      <strong>ShopNavigator</strong>
+      <small>Find your way. Choose the shortest path.</small>
+    </span>
+  </a>
+
+  <nav class="site-nav" aria-label="Main navigation">
+    <button class="nav-link active" id="homeTab" type="button" aria-current="page">Home</button>
+    <button class="nav-link" id="aboutTab" type="button">About Us</button>
+  </nav>
+</header>
+
+<div id="homePage">
+
+  <section class="controls">
+    <div class="field">
+      <label for="ss">Your current location</label>
+      <select id="ss"></select>
+    </div>
+
+    <button id="swap" title="Swap starting point and destination">&#8644;</button>
+
+    <div class="field">
+      <label for="sd">Destination</label>
+      <select id="sd"></select>
+    </div>
+
+    <div class="field">
+      <label for="speed">Speed</label>
+      <select id="speed">
+        <option value="500">Slow</option>
+        <option value="250" selected>Normal</option>
+        <option value="90">Fast</option>
+        <option value="0">Instant</option>
+      </select>
+    </div>
+
+    <label class="field chk">
+      <input type="checkbox" id="acc">
+      Wheelchair accessible (no stairs/escalator)
+    </label>
+
+    <label class="field chk">
+      <input type="checkbox" id="crowd">
+      Avoid crowded corridors
+    </label>
+
+    <button class="go" id="find">Find Shortest Route</button>
+    <button id="instant" title="Calculate immediately, then animate the route">Show Instantly ↗</button>
+    <button id="randomCosts" title="Generate new random weights for all connections">Change Costs ↻</button>
+  </section>
+
+  <main class="main">
+    <div class="card">
+      <div class="tabs" id="tabs"></div>
+
+      <svg id="map" viewBox="0 0 1000 580">
+        <g id="layer"></g>
+        <circle id="me" r="11" cx="0" cy="0"/>
+      </svg>
+
+      <p class="note">
+        Red dot = you. Teal = explored locations. Orange node = being processed.
+        Dashed orange corridor = crowded. Grey corridors form loops, so there
+        are several possible routes to compare. Shop doors sit on the corridors.
+      </p>
+    </div>
+
+    <aside class="card">
+      <div class="stat">
+        <div><small>DISTANCE</small><b id="dist">-</b></div>
+        <div><small>EST. WALK TIME</small><b id="time">-</b></div>
+        <div><small id="nvLabel">NODES VISITED</small><b id="nv">-</b></div>
+        <div><small>RELAXATIONS</small><b id="rx">-</b></div>
+      </div>
+
+      <p class="msg" id="msg">Choose a start and destination, then press Find Shortest Route.</p>
+
+      <h2>Directions</h2>
+      <ol id="dir"></ol>
+
+      <h2>Algorithm comparison (same graph and options)</h2>
+      <div id="cmp" class="msg">Run a route to compare.</div>
+
+      <h2 id="traceHeading">Dijkstra trace (priority queue pops)</h2>
+      <ul id="log"></ul>
+    </aside>
+  </main>
+
+  <section class="complexity-section">
+    <div class="complexity-heading">
+      <div>
+        <h2>How the algorithms compare</h2>
+        <p>Compare the time and auxiliary space requirements of both algorithms on the same weighted graph.</p>
+      </div>
+
+      <span class="graph-pill">
+        This mall: <span id="cv"></span> locations ·
+        <span id="ce"></span> connections
+      </span>
+    </div>
+
+    <div class="complexity-grid two-algorithms">
+
+      <article class="complexity-card primary" id="dijkstraCard">
+        <div class="algorithm-top">
+          <div class="algorithm-icon">↗</div>
+          <div>
+            <div class="algorithm-name">Dijkstra's Algorithm</div>
+            <span class="algorithm-tag">Priority queue</span>
+          </div>
+        </div>
+
+        <div class="complexity-metrics">
+          <div class="complexity-metric">
+            <div class="formula-label">Time complexity</div>
+            <div class="complexity-formula">O((V + E) log V)</div>
+            <p>With a binary min-heap, Dijkstra explores the nearest known location and updates distances efficiently.</p>
+          </div>
+
+          <div class="complexity-metric">
+            <div class="formula-label">Auxiliary space complexity</div>
+            <div class="complexity-formula">O(V + E)</div>
+            <p>The heap can contain duplicate entries, so worst-case auxiliary space can reach O(V + E), excluding graph storage.</p>
+          </div>
+        </div>
+
+        <div class="mini-flow">
+          <span>Nearest node</span><b>→</b>
+          <span>Update distances</span><b>→</b>
+          <span>Repeat</span>
+        </div>
+      </article>
+
+      <article class="complexity-card comparison" id="bellmanCard">
+        <div class="algorithm-top">
+          <div class="algorithm-icon">⟳</div>
+          <div>
+            <div class="algorithm-name">Bellman–Ford</div>
+            <span class="algorithm-tag">Repeated edge relaxation</span>
+          </div>
+        </div>
+
+        <div class="complexity-metrics">
+          <div class="complexity-metric">
+            <div class="formula-label">Time complexity</div>
+            <div class="complexity-formula">O(V × E)</div>
+            <p>Repeatedly scans graph edges, improving distance estimates over multiple passes until no further improvements occur.</p>
+          </div>
+
+          <div class="complexity-metric">
+            <div class="formula-label">Auxiliary space complexity</div>
+            <div class="complexity-formula">O(V)</div>
+            <p>Stores distance estimates, predecessors and result information for vertices, excluding graph storage.</p>
+          </div>
+        </div>
+
+        <div class="mini-flow">
+          <span>Check edges</span><b>→</b>
+          <span>Improve distances</span><b>→</b>
+          <span>Repeat</span>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="complexity-legend">
+      <span><span class="legend-dot"></span><b>V</b> = number of locations</span>
+      <span>·</span>
+      <span><b>E</b> = number of connections</span>
+      <span>·</span>
+      <span>Space figures exclude the graph's stored adjacency lists.</span>
+    </div>
+
+    <p class="msg" style="margin:12px 0 0">
+      Worst-case estimate for this graph:
+      Dijkstra ≈ <b id="cd"></b> basic steps;
+      Bellman–Ford ≈ <b id="cb"></b> edge checks.
+    </p>
+
+    <div class="bf-result" id="bfResult" aria-live="polite">
+      <strong>Algorithm comparison result</strong>
+      <p>Run a route to compare the costs and work performed by Dijkstra and Bellman–Ford.</p>
+    </div>
+  </section>
+
+</div>
+
+<section id="aboutPage" class="about-page" hidden>
+  <div class="about-hero">
+    <span class="eyebrow">OUR DAA PROJECT</span>
+    <h1>Finding the smarter way around.</h1>
+    <p>
+      ShopNavigator is an interactive, multi-floor mall navigation simulation
+      that demonstrates how graph algorithms find shortest paths between locations.
+    </p>
+
+    <div class="about-actions">
+      <a href="https://github.com/NidaKamil14/ShopNavigator"
+         target="_blank" rel="noopener noreferrer"
+         class="about-button primary-button">View project on GitHub ↗</a>
+
+      <button type="button" class="about-button secondary-button" id="backHome">
+        Explore the simulation
+      </button>
+    </div>
+  </div>
+
+  <div class="about-content">
+
+    <section class="about-block">
+      <span class="eyebrow">01 — THE IDEA</span>
+      <h2>Navigation meets algorithms.</h2>
+      <p>
+        ShopNavigator models a multi-floor mall as a weighted graph.
+        Stores, entrances and junctions represent vertices, while corridors
+        and floor connections represent weighted edges. Users can select a
+        starting point and destination and observe how shortest-path
+        algorithms explore the graph.
+      </p>
+
+      <div class="feature-grid">
+        <article class="feature-card">
+          <span>⌖</span>
+          <h3>Four floors</h3>
+          <p>Explore stores and connecting corridors throughout the mall.</p>
+        </article>
+
+        <article class="feature-card">
+          <span>↗</span>
+          <h3>Route visualization</h3>
+          <p>Watch locations being explored and see the resulting route.</p>
+        </article>
+
+        <article class="feature-card">
+          <span>⇄</span>
+          <h3>Weighted graph</h3>
+          <p>Compare routes using corridor costs and floor connections.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="about-block">
+      <span class="eyebrow">02 — THE ALGORITHMS</span>
+      <h2>Two approaches. One destination.</h2>
+
+      <div class="algorithm-about-grid">
+        <article class="algorithm-about-card">
+          <span class="algorithm-tag">GREEDY APPROACH</span>
+          <h3>Dijkstra's Algorithm</h3>
+          <p>
+            Uses a min-heap priority queue to process the unvisited location
+            with the smallest known distance. It is suitable for graphs
+            with non-negative edge weights.
+          </p>
+          <div class="about-complexity">
+            <div>
+              <small>Time complexity</small>
+              <strong>O((V + E) log V)</strong>
+            </div>
+            <div>
+              <small>Auxiliary space in this implementation</small>
+              <strong>O(V + E)</strong>
+            </div>
+          </div>
+        </article>
+
+        <article class="algorithm-about-card">
+          <span class="algorithm-tag">EDGE RELAXATION</span>
+          <h3>Bellman–Ford</h3>
+          <p>
+            Repeatedly scans graph edges and updates distance estimates
+            over successive passes. It can handle negative edge weights
+            when no reachable negative-weight cycle invalidates the result.
+          </p>
+          <div class="about-complexity">
+            <div>
+              <small>Time complexity</small>
+              <strong>O(V × E)</strong>
+            </div>
+            <div>
+              <small>Auxiliary space</small>
+              <strong>O(V)</strong>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <div class="difference-note">
+        <h3>How do they differ in ShopNavigator?</h3>
+        <p>
+          Dijkstra processes locations according to their smallest tentative
+          distance, while Bellman–Ford repeatedly scans edges in iteration order.
+          When equal-cost alternatives exist, their tie-breaking and processing
+          order can result in different selected routes with the same minimum
+          cost. Different routes are not guaranteed for every selection.
+        </p>
+        <p>
+          This simulation uses non-negative corridor costs and optional
+          accessibility and crowd penalties to explore route selection.
+        </p>
+      </div>
+    </section>
+
+    <section class="about-block">
+      <span class="eyebrow">03 — THE PEOPLE</span>
+      <h2>Meet the team.</h2>
+      <p>
+        Built as a Design and Analysis of Algorithms project, ShopNavigator
+        brings graph theory and interactive visualization together.
+      </p>
+
+      <div class="team-grid">
+        <article class="team-card">
+          <span class="team-number">01</span>
+          <h3>Nida Rashid Kamil</h3>
+          <p>124B1F098</p>
+        </article>
+
+        <article class="team-card">
+          <span class="team-number">02</span>
+          <h3>Sharvari Amol Bangar</h3>
+          <p>124B1F100</p>
+        </article>
+
+        <article class="team-card">
+          <span class="team-number">03</span>
+          <h3>Arya Tukaram Navrang</h3>
+          <p>124B1F096</p>
+        </article>
+
+        <article class="team-card">
+          <span class="team-number">04</span>
+          <h3>Sanika Pradip Daundkar</h3>
+          <p>124B1F104</p>
+        </article>
+      </div>
+
+      <p class="team-note">Built with teamwork, curiosity, and a shared passion for problem-solving.</p>
+    </section>
+
+    <footer class="site-footer">
+      <a href="https://github.com/NidaKamil14/ShopNavigator"
+         target="_blank" rel="noopener noreferrer">ShopNavigator on GitHub ↗</a>
+      <p>A Design and Analysis of Algorithms project simulation</p>
+      <p>Created with curiosity, graph theory and code.</p>
+    </footer>
+
+  </div>
 </section>
 
-<main class="main">
-  <div class="card">
-    <div class="tabs" id="tabs"></div>
-    <svg id="map" viewBox="0 0 1000 580"><g id="layer"></g><circle id="me" r="11" cx="0" cy="0"/></svg>
-    <p class="note">Red dot = you. Teal = explored locations. Orange node = being processed. Dashed orange corridor = crowded. Grey corridors form loops, so there are several possible routes to compare. Shop doors sit on the corridors.</p>
-  </div>
+<script src="script.js" defer></script>
 
-  <aside class="card">
-    <div class="stat">
-      <div><small>DISTANCE</small><b id="dist">-</b></div>
-      <div><small>EST. WALK TIME</small><b id="time">-</b></div>
-      <div><small id="nvLabel">NODES VISITED</small><b id="nv">-</b></div>
-      <div><small>RELAXATIONS</small><b id="rx">-</b></div>
-    </div>
-    <p class="msg" id="msg">Choose a start and destination, then press Find Shortest Route.</p>
-    <h2>Directions</h2><ol id="dir"></ol>
-    <h2>Algorithm comparison (same route, same options)</h2><div id="cmp" class="msg">Run a route to compare.</div>
-    <h2 id="traceHeading">Dijkstra trace (priority queue pops)</h2><ul id="log"></ul>
-  </aside>
-</main>
+<script>
+  function showPage(page) {
+    const isHome = page === "home";
 
-<section class="complexity-section">
-  <div class="complexity-heading">
-    <div>
-      <h2>How the algorithms compare</h2>
-      <p>Switch algorithms to compare their route-finding process on the same weighted graph.</p>
-    </div>
-    <span class="graph-pill">This mall: <span id="cv"></span> locations · <span id="ce"></span> connections</span>
-  </div>
+    document.getElementById("homePage").hidden = !isHome;
+    document.getElementById("aboutPage").hidden = isHome;
 
-  <div class="complexity-grid two-algorithms">
-    <article class="complexity-card primary" id="dijkstraCard">
-      <div class="algorithm-top">
-        <div class="algorithm-icon">↗</div>
-        <div>
-          <div class="algorithm-name">Dijkstra's Algorithm</div>
-          <span class="algorithm-tag">Priority queue</span>
-        </div>
-      </div>
-      <div class="formula-label">Time complexity</div>
-      <div class="complexity-formula">O((V + E) log V)</div>
-      <p>Explores the nearest known location first. Efficient for our mall's non-negative route costs.</p>
-      <div class="mini-flow"><span>Nearest node</span><b>→</b><span>Update distances</span><b>→</b><span>Repeat</span></div>
-    </article>
+    document.getElementById("homeTab").classList.toggle("active", isHome);
+    document.getElementById("aboutTab").classList.toggle("active", !isHome);
 
-    <article class="complexity-card comparison" id="bellmanCard">
-      <div class="algorithm-top">
-        <div class="algorithm-icon">⟳</div>
-        <div>
-          <div class="algorithm-name">Bellman–Ford</div>
-          <span class="algorithm-tag">Repeated edge relaxation</span>
-        </div>
-      </div>
-      <div class="formula-label">Time complexity</div>
-      <div class="complexity-formula">O(V × E)</div>
-      <p>Repeatedly checks connections and improves distance estimates over multiple passes.</p>
-      <div class="mini-flow"><span>Check edges</span><b>→</b><span>Improve distances</span><b>→</b><span>Repeat</span></div>
-    </article>
-  </div>
+    document.getElementById("homeTab").setAttribute("aria-current", isHome ? "page" : "false");
+    document.getElementById("aboutTab").setAttribute("aria-current", !isHome ? "page" : "false");
 
-  <div class="complexity-legend">
-    <span><span class="legend-dot"></span><b>V</b> = number of locations</span>
-    <span>·</span>
-    <span><b>E</b> = number of connections</span>
-    <span>·</span>
-    <span>Space used by each: <b>O(V)</b></span>
-  </div>
-  <p class="msg" style="margin:12px 0 0">Worst-case estimate for this graph: Dijkstra ≈ <b id="cd"></b> basic steps; Bellman–Ford ≈ <b id="cb"></b> edge checks.</p>
-  <div class="bf-result" id="bfResult" aria-live="polite">
-    <strong>Bellman–Ford result</strong>
-    <p>Run a route to see whether Bellman–Ford finds the same cost and how many edge checks it performs compared with Dijkstra.</p>
-  </div>
-</section>
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
 
-  <script src="script.js" defer></script>
+  document.getElementById("homeTab").addEventListener("click", () => showPage("home"));
+  document.getElementById("aboutTab").addEventListener("click", () => showPage("about"));
+
+  document.getElementById("brandHome").addEventListener("click", event => {
+    event.preventDefault();
+    showPage("home");
+  });
+
+  document.getElementById("backHome").addEventListener("click", () => showPage("home"));
+</script>
+
 </body>
 </html>
